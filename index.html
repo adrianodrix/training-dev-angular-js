@@ -5,80 +5,19 @@
 	<title>Lista Telefônica</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="css/app.css">
 	
-	<style type="text/css">
-		h3 {
-			text-align: center;
-		}
-		.jumbotron{
-			width: 600px;
-			margin-top: 20px;
-			margin-left: auto;
-			margin-right: auto;
-		}
-		.content{
-			margin-top: 20px;
-			margin-left: 20px;
-			width: 90%;
-		}
-		.form-control{
-			margin-bottom: 5px;
-		}
-		.selecionado{
-			background-color: yellow;
-		}
-		.negrito {
-			font-weight: bold; 
-		}
-	</style>
-
 	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
 	<script src="https://code.angularjs.org/1.4.3/angular-messages.min.js"></script>
 	<script src="lib/angular/angular-locale_pt-br.js"></script>
-	<script type="text/javascript">
-		angular.module("listaTelefonica", ["ngMessages"]);
-		angular.module("listaTelefonica").controller("listaTelefonicaCtrl",['$scope', '$filter', function($scope, $filter){
-			$scope.app = "Lista Telefônica!";
-			$scope.criterioDeOrdenacao = 'nome';
-			$scope.direcaoDaOrdenacao = false;
-
-
-			$scope.contatos = [
-				{nome: $filter('uppercase')("Pedro"), telefone: "99998888", data: new Date(), cor: 'blue', operadora: {nome: "Oi", codigo: 14, categoria: "Celular"}},
-				{nome: $filter('uppercase')("Ana"), telefone: "99998877", data: new Date(), cor: 'red', operadora: {nome: $filter('uppercase')("Tim"), codigo: 41, categoria: "Celular"}},
-				{nome: $filter('uppercase')("Maria"), telefone: "99998866", data: new Date(), cor: 'orange', operadora: {nome: "Tim", codigo: 41, categoria: "Celular"}},
-			];
-			$scope.operadoras = [
-				{nome: "Oi", codigo: 14, categoria: "Celular", preco: 2},
-				{nome: "Vivo", codigo: 15, categoria: "Celular", preco: 2.5},
-				{nome: "Tim", codigo: 41, categoria: "Celular", preco: 1.8},
-				{nome: "Embratel", codigo: 21, categoria: "Fixo", preco: 2},
-				{nome: "GVT", codigo: 25, categoria: "Fixo", preco: 2.9},
-			];
-			$scope.adicionarContato = function(contato){
-				$scope.contatos.push(angular.copy(contato));
-				delete $scope.contato;
-				$scope.contatoForm.$setPristine();
-			};
-			$scope.apagarContatos = function(contatos){
-				$scope.contatos = contatos.filter(function(contato){
-					if (!contato.selecionado) return contato;
-				});				
-			};
-			$scope.isContatosSelecionados = function(contatos){
-				return contatos.some(function(contato){
-					return contato.selecionado;
-				});
-			};			
-			$scope.ordenarPor = function(campo){
-				$scope.criterioDeOrdenacao = campo;
-				$scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
-			};
-
-		}]);
-	</script>
+	<script src="js/app.js"></script>
+	<script src="js/configValue.js"></script>
+	<script src="js/controllers/listaTelefonicaCtrl.js"></script>
+	<script src="js/services/contatosAPIService.js"></script>
+	<script src="js/filters/nameFilter.js"></script>
+	<script src="js/filters/ellipsisFilter.js"></script>
 </head>
 <body ng-controller="listaTelefonicaCtrl">
 	<div class="jumbotron">
@@ -88,26 +27,26 @@
 			<table class="table" ng-show="contatos.length">
 				<tr>
 					<th></th>
-					<th><a href="" ng-click="ordenarPor('nome')">Nome</a></th>
-					<th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
-					<th><a href="" ng-click="ordenarPor('operadora')">Operadora</a></th>
+					<th><a href="" ng-click="ordenarPor('name')">Nome</a></th>
+					<th><a href="" ng-click="ordenarPor('phone')">Telefone</a></th>
+					<th><a href="" ng-click="ordenarPor('operator')">Operadora</a></th>
 					<th></th>
 					<th>Data</th>
 				</tr>
 				<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
 					<td><input type="checkbox" ng-model="contato.selecionado"></td>
-					<td>{{ contato.nome }}</td>
-					<td>{{ contato.telefone }}</td>
-					<td>{{ contato.operadora.nome | lowercase }}</td>
-					<td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.cor}"></div></td> 
-					<td>{{ contato.data | date:'EEE dd/MM/yyyy HH:mm' }}</td>
+					<td>{{ contato.name | name | ellipsis: 15 }}</td>
+					<td>{{ contato.phone }}</td>
+					<td>{{ contato.operator | uppercase }}</td>
+					<td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.color}"></div></td> 
+					<td>{{ contato.created_at | date:'EEE dd/MM/yyyy HH:mm' }}</td>
 				</tr>
 			</table>
 			<hr/>
 			<form name="contatoForm" class="form">
-				<input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome" ng-required="true" ng-minlength="10" />
-				<input class="form-control" type="text" ng-model="contato.telefone" name="telefone" placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
-				<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome +' ('+ (operadora.preco | currency) +')' group by operadora.categoria for operadora in operadoras | orderBy:'nome'">				
+				<input class="form-control" type="text" ng-model="contato.name" name="nome" placeholder="Nome" ng-required="true" ng-minlength="10" />
+				<input class="form-control" type="text" ng-model="contato.phone" name="telefone" placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
+				<select class="form-control" ng-model="contato.operator" ng-options="operadora.nome as operadora.nome +' ('+ (operadora.preco | currency) +')' group by operadora.categoria for operadora in operadoras | orderBy:'nome'">				
 					<option value="">Selecione uma operadora</option>}
 					option
 				</select>
@@ -133,6 +72,6 @@
 			</form>
 		</div>
 	</div>
-	<div ng-include="'footer.html'"></div>
+	<div ng-include="'view/footer.html'"></div>
 </body>
 </html>
