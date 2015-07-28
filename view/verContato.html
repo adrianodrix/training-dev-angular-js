@@ -1,0 +1,13 @@
+<div class="jumbotron">
+	<div class="content">
+		<div ng-include="'view/header.html'"></div>
+		<h3 ng-style="{'color': contato.color}">{{ contato.name | name }}</h3>
+		<address>
+			Data de Cadastro: {{ contato.created_at | date : "EEE dd/MM/yyyy HH:mm" }} <br/>
+			Telefone: {{ contato.phone }}<br/>
+			Operadora: {{ contato.operator | uppercase }}
+		</address>
+		{{ contato }}
+		<a class="btn btn-success btn-block" href="#/contatos" style="margin-top:20px;">Voltar</a>
+	</div>
+</div>

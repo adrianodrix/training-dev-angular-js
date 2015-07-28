@@ -1,0 +1,37 @@
+<div class="jumbotron">
+	<div class="content">
+		<div ng-include="'view/header.html'"></div>
+		<ui-accordions>
+			<ui-accordion title="Accordion 1">
+				cMussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.
+			</ui-accordion>
+			<ui-accordion title="Accordion 2">
+				Mussum ipsum cacilds, vidis litro abertis. Consetis adipiscings elitis. Pra lá , depois divoltis porris, paradis. Paisis, filhis, espiritis santis. Mé faiz elementum girarzis, nisi eros vermeio, in elementis mé pra quem é amistosis quis leo. Manduma pindureta quium dia nois paga. Sapien in monti palavris qui num significa nadis i pareci latim. Interessantiss quisso pudia ce receita de bolis, mais bolis eu num gostis.
+			</ui-accordion>
+		</ui-accordions>
+
+		<input class="form-control" type="search" placeholder="Buscar?" ng-model="criterioDeBusca"/>
+
+		<table class="table" ng-show="contatos.length">
+			<tr>
+				<th></th>
+				<th><a href="" ng-click="ordenarPor('name')">Nome</a></th>
+				<th><a href="" ng-click="ordenarPor('phone')">Telefone</a></th>
+				<th><a href="" ng-click="ordenarPor('operator')">Operadora</a></th>
+				<th></th>
+				<th>Data</th>
+			</tr>
+			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
+				<td><input type="checkbox" ng-model="contato.selecionado"></td>
+				<td><a href="#/ver-contato/{{contato.id}}">{{ contato.name | name | ellipsis: 15 }}</a></td>
+				<td>{{ contato.phone }}</td>
+				<td>{{ contato.operator | uppercase }}</td>
+				<td><div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.color}"></div></td> 
+				<td>{{ contato.created_at | date:'EEE dd/MM/yyyy HH:mm' }}</td>
+			</tr>
+		</table>
+		<hr/>
+		<a class="btn btn-primary btn-block" href="#/novo-contato">Novo Contato</a>
+		<button class="btn btn-danger btn-block" ng-click="apagarContatos(contatos)" ng-if="isContatosSelecionados(contatos)">Apagar Contatos</button>
+	</div>
+</div>
